@@ -1,4 +1,10 @@
 package me.new2001.webshop.users;
 
-public record LoginRequestDto(String email, String password) {
+import javax.validation.constraints.NotBlank;
+
+public record LoginRequestDto(
+        @NotBlank
+        String email,
+        @NotBlank
+        String password) {
 }

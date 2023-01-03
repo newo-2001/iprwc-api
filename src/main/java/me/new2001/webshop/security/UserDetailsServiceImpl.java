@@ -9,11 +9,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
+    private static final List<String> ADMINS = Collections.singletonList("owen@gmail.com");
     private final IUserRepository userRepository;
 
     @Autowired
@@ -25,10 +25,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) throw new UsernameNotFoundException("Could not find user with email " + email);
+
+        List<SimpleGrantedAuthority> roles = new ArrayList<>(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+        if (ADMINS.contains(email)) {
+            roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 email,
                 user.get().getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                roles
         );
     }
 }
