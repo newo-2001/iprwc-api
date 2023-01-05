@@ -1,6 +1,7 @@
 package me.newo2001.webshop.common.pagination;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 public record PaginationRequest(int page, int pageSize) {
     public PaginationRequest {
@@ -13,7 +14,7 @@ public record PaginationRequest(int page, int pageSize) {
         }
     }
 
-    public PageRequest asPageRequest() {
-        return PageRequest.of(page-1, pageSize);
+    public PageRequest asPageRequest(Sort sort) {
+        return PageRequest.of(page-1, pageSize, sort);
     }
 }

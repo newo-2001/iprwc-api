@@ -8,7 +8,7 @@
         <version>2.7.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>me.new2001</groupId>
+    <groupId>me.newo2001</groupId>
     <artifactId>webshop-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>webshop-backend</name>

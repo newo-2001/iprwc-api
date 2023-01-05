@@ -4,6 +4,7 @@ import me.newo2001.webshop.common.NotFoundException;
 import me.newo2001.webshop.common.pagination.Paginated;
 import me.newo2001.webshop.common.pagination.PaginationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Paginated<Product> getProductPage(PaginationRequest page) {
-        return Paginated.fromPage(productRepository.findAll(page.asPageRequest()));
+        return Paginated.fromPage(productRepository.findAll(page.asPageRequest(Sort.unsorted())));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package me.newo2001.webshop.security;
 
-import me.new2001.webshop.users.*;
 import me.newo2001.webshop.users.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

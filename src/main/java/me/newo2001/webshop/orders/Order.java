@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Table(name="orders")
 public class Order {
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<OrderLine> items;
 
     @OneToOne

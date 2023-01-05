@@ -6,6 +6,7 @@ import me.newo2001.webshop.common.pagination.PaginationRequest;
 import me.newo2001.webshop.users.IUserRepository;
 import me.newo2001.webshop.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,7 +33,8 @@ public class OrderService implements IOrderService {
 
     @Override
     public Paginated<Order> getOrderPageByUser(User user, PaginationRequest pageRequest) {
-        return Paginated.fromPage(orderRepository.findAllByUser(user, pageRequest.asPageRequest()));
+        Sort byDate = Sort.by(Sort.Direction.DESC, "orderTime");
+        return Paginated.fromPage(orderRepository.findAllByUser(user, pageRequest.asPageRequest(byDate)));
     }
 
     @Override
