@@ -9,5 +9,6 @@ public record CreateProductDto(
         String description,
         @Min(0)
         int price,
-        String thumbnailUri) {
+        String thumbnailUri,
+        String[] categories) {
 }

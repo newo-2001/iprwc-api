@@ -1,5 +1,6 @@
 package me.newo2001.webshop.products;
 
+import me.newo2001.webshop.categories.Category;
 import me.newo2001.webshop.common.NotFoundException;
 import me.newo2001.webshop.common.pagination.Paginated;
 import me.newo2001.webshop.common.pagination.PaginationRequest;
@@ -8,7 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -30,8 +33,17 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public Paginated<Product> getProductPageByCategory(Category category, PaginationRequest page) {
+        return Paginated.fromPage(productRepository.findAllByCategory(category.getId(), page.asPageRequest(Sort.unsorted())));
+    }
+
+    @Override
     public Product createProduct(CreateProductDto dto) {
-        Product product = new Product(dto.name(), dto.price(), dto.description(), dto.thumbnailUri());
+        Set<Category> categories = Set.of(dto.categories())
+                .stream().map(Category::new)
+                .collect(Collectors.toSet());
+
+        Product product = new Product(dto.name(), dto.price(), dto.description(), dto.thumbnailUri(), categories);
         productRepository.save(product);
         return product;
     }

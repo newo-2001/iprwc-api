@@ -2,6 +2,8 @@ package me.newo2001.webshop.orders;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import me.newo2001.webshop.users.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,8 +17,8 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<OrderLine> items;
 
-    @OneToOne
     @NotNull
+    @ManyToOne
     private User user;
 
     @NotNull

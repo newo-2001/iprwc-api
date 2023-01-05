@@ -2,6 +2,8 @@ package me.newo2001.webshop.orders;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import me.newo2001.webshop.products.Product;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +18,8 @@ public class OrderLine implements Serializable {
     @JsonIgnore
     private UUID id;
 
-    @OneToOne
+    @ManyToOne
+    @OnDelete(action=OnDeleteAction.CASCADE)
     @JoinColumn(name="product_id", nullable = false)
     private Product product;
 
