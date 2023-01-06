@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/auth/**", "/error").permitAll()
                 .antMatchers(HttpMethod.GET, "/products/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/categories/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)

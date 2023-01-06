@@ -41,6 +41,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public Optional<Category> findCategoryByName(String name) {
+        return categoryRepository.findByName(name);
+    }
+
+    @Override
     public Category updateCategory(UUID id, CreateCategoryDto dto) {
         Category category = findCategoryById(id)
                 .orElseThrow(NotFoundException::new);

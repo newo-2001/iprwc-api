@@ -1,6 +1,7 @@
 package me.newo2001.webshop.products;
 
 import me.newo2001.webshop.categories.Category;
+import me.newo2001.webshop.categories.ICategoryRepository;
 import me.newo2001.webshop.common.NotFoundException;
 import me.newo2001.webshop.common.pagination.Paginated;
 import me.newo2001.webshop.common.pagination.PaginationRequest;
@@ -8,18 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
     private final IProductRepository productRepository;
+    private final ICategoryRepository categoryRepository;
 
     @Autowired
-    public ProductService(IProductRepository productRepository) {
+    public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -39,9 +40,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Product createProduct(CreateProductDto dto) {
-        Set<Category> categories = Set.of(dto.categories())
-                .stream().map(Category::new)
-                .collect(Collectors.toSet());
+        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(List.of(dto.categories())));
 
         Product product = new Product(dto.name(), dto.price(), dto.description(), dto.thumbnailUri(), categories);
         productRepository.save(product);
@@ -57,6 +56,9 @@ public class ProductService implements IProductService {
         product.setDescription(dto.description());
         product.setName(dto.name());
         product.setPrice(dto.price());
+
+        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(List.of(dto.categories())));
+        product.setCategories(categories);
 
         productRepository.save(product);
         return product;
