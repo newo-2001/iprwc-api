@@ -1,11 +1,13 @@
 package me.newo2001.webshop.orders;
 
+import me.newo2001.webshop.common.NotFoundException;
 import me.newo2001.webshop.products.IProductRepository;
 import me.newo2001.webshop.products.Product;
 import me.newo2001.webshop.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,13 +52,17 @@ public class OrderBuilder implements IOrderBuilder {
         }
 
         public Order build() {
-            Map<UUID, Product> products = productRepository.findAllById(orderLines.keySet())
-                    .stream().collect(Collectors.toMap(Product::getId, item -> item));
+            try {
+                Map<UUID, Product> products = productRepository.findAllById(orderLines.keySet())
+                        .stream().collect(Collectors.toMap(Product::getId, item -> item));
 
-            order.setOrderLines(orderLines.entrySet().stream().map(entry -> new OrderLine(
-                    products.get(entry.getKey()),
-                    entry.getValue()
-            )).collect(Collectors.toSet()));
+                order.setOrderLines(orderLines.entrySet().stream().map(entry -> new OrderLine(
+                        products.get(entry.getKey()),
+                        entry.getValue()
+                )).collect(Collectors.toSet()));
+            } catch (ConstraintViolationException e) {
+                throw new NotFoundException();
+            }
 
             return order;
         }
