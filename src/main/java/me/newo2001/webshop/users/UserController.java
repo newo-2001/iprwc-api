@@ -22,22 +22,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable UUID id) {
-        User user = userService.getUserById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden"));
-
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User authenticatedUser = userService.getUserByEmail(authentication.getName())
                 .orElseThrow(() -> new IllegalStateException("User authenticated without account"));
 
-        if (user.getId() != authenticatedUser.getId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
-        }
-
         List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList();
 
-        return ResponseEntity.ok(new UserResponseDto(user.getId(), user.getEmail(), roles));
+        return ResponseEntity.ok(new UserResponseDto(authenticatedUser.getId(), authenticatedUser.getEmail(), roles));
     }
 }

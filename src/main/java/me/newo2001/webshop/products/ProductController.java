@@ -12,6 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -47,13 +51,21 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Product> createProduct(@RequestBody CreateProductDto creationData) {
+    public ResponseEntity<Product> createProduct(@RequestBody @Valid CreateProductDto creationData) {
+        if (Arrays.stream(creationData.categories()).anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("Category id must not be null");
+        }
+
         return ResponseEntity.ok(productService.createProduct(creationData));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Product> updateProduct(@PathVariable UUID id, @RequestBody CreateProductDto creationData) {
+    public ResponseEntity<Product> updateProduct(@PathVariable UUID id, @RequestBody @Valid CreateProductDto creationData) {
+        if (Arrays.stream(creationData.categories()).anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("Category id must not be null");
+        }
+
         return ResponseEntity.ok(productService.updateProduct(id, creationData));
     }
 

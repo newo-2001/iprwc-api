@@ -1,7 +1,11 @@
 package me.newo2001.webshop.common.pagination;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 public record PaginationRequest(int page, int pageSize) {
     public PaginationRequest {

@@ -5,9 +5,10 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class OrderItemDto {
-    @NotNull
+    @NotNull(message="Product id must not be null")
     private UUID productId;
-    @Min(1)
+    @NotNull(message="Amount must not be null")
+    @Min(value=1, message="Amount must be positive")
     private int amount = 1;
 
     public OrderItemDto() { }

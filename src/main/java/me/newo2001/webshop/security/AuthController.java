@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -17,12 +19,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserInfoDto> register(@RequestBody RegisterRequestDto dto) {
+    public ResponseEntity<UserInfoDto> register(@RequestBody @Valid RegisterRequestDto dto) {
         return ResponseEntity.ok(authService.register(dto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto dto) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDto dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
 }

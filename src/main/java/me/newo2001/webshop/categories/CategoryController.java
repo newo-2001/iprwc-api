@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Category> updateCategory(@PathVariable UUID id, @RequestBody CreateCategoryDto dto) {
+    public ResponseEntity<Category> updateCategory(@PathVariable UUID id, @RequestBody @Valid CreateCategoryDto dto) {
         categoryService.findCategoryByName(dto.name()).ifPresent(category -> {
             if (!category.getId().equals(id))
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Category with that name already exists");
@@ -51,7 +52,7 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Category> createCategory(@RequestBody CreateCategoryDto dto) {
+    public ResponseEntity<Category> createCategory(@RequestBody @Valid CreateCategoryDto dto) {
         categoryService.findCategoryByName(dto.name()).ifPresent(x -> {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Category with that name already exists");
         });

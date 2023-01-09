@@ -1,6 +1,10 @@
 package me.newo2001.webshop.categories;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import me.newo2001.webshop.products.Product;
+
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Embeddable
@@ -34,5 +38,16 @@ public class Category {
 
     public UUID getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Category)) return false;
+        return ((Category) other).id.equals(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

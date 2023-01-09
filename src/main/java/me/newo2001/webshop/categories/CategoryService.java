@@ -1,20 +1,25 @@
 package me.newo2001.webshop.categories;
 
 import me.newo2001.webshop.common.NotFoundException;
+import me.newo2001.webshop.products.IProductRepository;
+import me.newo2001.webshop.products.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class CategoryService implements ICategoryService {
     private final ICategoryRepository categoryRepository;
+    private final IProductRepository productRepository;
 
     @Autowired
-    public CategoryService(ICategoryRepository categoryRepository) {
+    public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -32,6 +37,13 @@ public class CategoryService implements ICategoryService {
         Category category = findCategoryById(id)
                 .orElseThrow(NotFoundException::new);
 
+        List<Product> products = productRepository.findAllByCategory(id);
+        for (Product product : products) {
+            Set<Category> categories = product.getCategories();
+            categories.remove(category);
+        }
+
+        productRepository.saveAll(products);
         categoryRepository.delete(category);
     }
 

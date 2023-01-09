@@ -26,7 +26,6 @@ public class Product {
     @JoinTable(name="product_category",
             joinColumns = @JoinColumn(name="product_id"),
             inverseJoinColumns = @JoinColumn(name="categories_id"))
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Category> categories;
 
     @NotNull

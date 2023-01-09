@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.UUID;
 
 @RestController
@@ -40,8 +43,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<Paginated<Order>> getOrderPage(@RequestParam(required = false, defaultValue = "1") int page,
-                                                         @RequestParam(required = false, defaultValue = "20") int pageSize) {
+    public ResponseEntity<Paginated<Order>> getOrderPage(@RequestParam(required = false, defaultValue = "1") @Min(1) int page,
+                                                         @RequestParam(required = false, defaultValue = "20") @Min(1) @Max(Paginated.MAX_PAGE_SIZE) int pageSize) {
         User authenticated = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new IllegalStateException("User authenticated without account"));
 
@@ -50,7 +53,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody CreateOrderDto orderData) {
+    public ResponseEntity<Order> createOrder(@RequestBody @Valid CreateOrderDto orderData) {
         User authenticated = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new IllegalStateException("User authenticated without account"));
 

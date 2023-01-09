@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -40,8 +39,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Product createProduct(CreateProductDto dto) {
-        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(List.of(dto.categories())));
-
+        Set<Category> categories = getAllCategories(dto.categories());
         Product product = new Product(dto.name(), dto.price(), dto.description(), dto.thumbnailUri(), categories);
         productRepository.save(product);
         return product;
@@ -56,9 +54,7 @@ public class ProductService implements IProductService {
         product.setDescription(dto.description());
         product.setName(dto.name());
         product.setPrice(dto.price());
-
-        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(List.of(dto.categories())));
-        product.setCategories(categories);
+        product.setCategories(getAllCategories(dto.categories()));
 
         productRepository.save(product);
         return product;
@@ -69,5 +65,15 @@ public class ProductService implements IProductService {
         Product product = productRepository.findById(id)
                         .orElseThrow(NotFoundException::new);
         productRepository.delete(product);
+    }
+
+    private Set<Category> getAllCategories(UUID[] categoryIds) {
+        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(List.of(categoryIds)));
+
+        if (!Arrays.stream(categoryIds).allMatch(x -> categories.stream().anyMatch(y -> y.getId().equals(x)))) {
+            throw new IllegalArgumentException("Categories contains invalid category id");
+        }
+
+        return categories;
     }
 }

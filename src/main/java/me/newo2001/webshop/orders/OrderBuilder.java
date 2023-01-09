@@ -52,17 +52,17 @@ public class OrderBuilder implements IOrderBuilder {
         }
 
         public Order build() {
-            try {
-                Map<UUID, Product> products = productRepository.findAllById(orderLines.keySet())
-                        .stream().collect(Collectors.toMap(Product::getId, item -> item));
+            Map<UUID, Product> products = productRepository.findAllById(orderLines.keySet())
+                    .stream().collect(Collectors.toMap(Product::getId, item -> item));
 
-                order.setOrderLines(orderLines.entrySet().stream().map(entry -> new OrderLine(
-                        products.get(entry.getKey()),
-                        entry.getValue()
-                )).collect(Collectors.toSet()));
-            } catch (ConstraintViolationException e) {
-                throw new NotFoundException();
+            if (!orderLines.keySet().stream().allMatch(products::containsKey)) {
+                throw new IllegalArgumentException("Order contained invalid product id");
             }
+
+            order.setOrderLines(orderLines.entrySet().stream().map(entry -> new OrderLine(
+                    products.get(entry.getKey()),
+                    entry.getValue()
+            )).collect(Collectors.toSet()));
 
             return order;
         }
