@@ -12,6 +12,6 @@ public record RegisterRequestDto(
         String email,
         @NotNull(message="Password must not be null")
         @NotBlank(message="Password must not be blank")
-        @Size(min=5, max=250, message="Password must be between 5 and 250 characters")
+        @Size(min=8, max=250, message="Password must be between 8 and 250 characters")
         String password) {
 }
